@@ -3,7 +3,7 @@ import { Layout } from '../components/Layout';
 import { ContextPanel } from '../components/RightPanel';
 import { FooterStepNav } from '../components/FooterStepNav';
 import { getLatestArtifact, getMessagesByStep, getUserErrorMessage, runTask } from '@/lib/backend';
-import { Sparkles, MessageCircle, Send, Zap } from 'lucide-react';
+import { Sparkles, Send, Zap } from 'lucide-react';
 
 interface ExploreCard {
   id: string;
@@ -119,7 +119,14 @@ export default function Phase2_1Exploration() {
     try {
       const res = await runTask('phase2_explore_chat_turn', {
         user_message: content,
-        selected_card: selectedCard,
+        selected_card: selectedCard
+          ? {
+              title: selectedCard.title,
+              tasks: selectedCard.tasks,
+              work_environment: selectedCard.work_environment,
+              outlook_salary: selectedCard.outlook,
+            }
+          : null,
       });
       setQaMessages(prev => [...prev, { role: 'assistant', content: String(res.output_json?.assistant_message || '') }]);
     } catch (error) {
@@ -207,20 +214,6 @@ export default function Phase2_1Exploration() {
                       border: selected ? '1.5px solid var(--color-accent)' : '1px solid var(--color-border)',
                     }}
                   >
-                    <div className="mb-2 flex items-center justify-end">
-                      <span
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px]"
-                        style={{
-                          backgroundColor: 'rgba(255,255,255,0.04)',
-                          border: '1px solid var(--color-border)',
-                          color: 'var(--color-text-secondary)',
-                          fontWeight: 600,
-                        }}
-                      >
-                        <Sparkles className="w-3 h-3" style={{ strokeWidth: 1.8 }} />
-                        AI 제안
-                      </span>
-                    </div>
                     <h3
                       className="text-[20px] mb-3"
                       style={{
@@ -277,7 +270,21 @@ export default function Phase2_1Exploration() {
             className="p-5 rounded-xl mb-6"
             style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)' }}
           >
-            <h3 className="mb-2" style={{ color: 'var(--color-text-primary)' }}>내 대안 지식 정리</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 style={{ color: 'var(--color-text-primary)' }}>내 대안 지식 정리</h3>
+              {selectedCard && (
+                <span
+                  className="text-[12px] px-2.5 py-1 rounded-full"
+                  style={{
+                    backgroundColor: 'rgba(255,31,86,0.08)',
+                    color: 'var(--color-accent)',
+                    border: '1px solid rgba(255,31,86,0.15)',
+                  }}
+                >
+                  현재 참고 중: {selectedCard.title}
+                </span>
+              )}
+            </div>
             <textarea
               value={knowledgeText}
               onChange={e => setKnowledgeText(e.target.value)}
@@ -319,18 +326,8 @@ export default function Phase2_1Exploration() {
 
       <ContextPanel title="직업/대안 Q&A" icon={Zap}>
         <div className="h-full flex flex-col">
-          <div
-            className="mx-4 mt-4 px-3 py-2 rounded-lg"
-            style={{
-              backgroundColor: 'rgba(255,31,86,0.08)',
-              border: '1px solid rgba(255,31,86,0.28)',
-            }}
-          >
-            <p className="text-[12px]" style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-              {selectedCard
-                ? `현재 "${selectedCard.title}" 대안을 중심으로 답변합니다.`
-                : '선택한 대안이 없으면 전체 맥락으로 답변합니다.'}
-            </p>
+          <div className="px-4 py-2 text-[12px]" style={{ color: 'var(--color-text-secondary)', borderBottom: '1px solid var(--color-border)' }}>
+            {selectedCard ? `현재 질문 대상: ${selectedCard.title}` : '카드를 선택하면 해당 대안 중심으로 질문할 수 있습니다.'}
           </div>
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
             {isQaLoading && (
@@ -360,11 +357,6 @@ export default function Phase2_1Exploration() {
                     lineHeight: 1.7,
                   }}
                 >
-                  {msg.role === 'assistant' && (
-                    <div className="flex items-center gap-1 mb-1 text-[11px]" style={{ color: 'var(--color-text-secondary)' }}>
-                      <MessageCircle className="w-3 h-3" /> AI
-                    </div>
-                  )}
                   {msg.content}
                 </div>
               </div>
