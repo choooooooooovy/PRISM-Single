@@ -1086,6 +1086,8 @@ class TaskRunner:
                 )
             explore = artifact.payload
         cards = list((explore if isinstance(explore, dict) else {}).get('cards') or [])
+        target_count = 5
+        min_count = 3
 
         parsed, prompt_run = await self.openai_service.run_structured(
             db=db,
@@ -1099,7 +1101,8 @@ class TaskRunner:
                 'Return strict JSON only.\n'
                 'All user-facing text values must be Korean.\n'
                 'Output unified_candidates only (single-agent structure).\n'
-                'Create exactly 6 diverse candidates grounded in input cards.\n'
+                'Create 3 to 5 diverse candidates grounded in input cards.\n'
+                'Prefer 5 candidates unless source quality is insufficient.\n'
                 'Each candidate requires id/title/summary/proposer.\n'
                 'proposer should be a fixed string: \"AI 제안\".\n'
                 'Do not use persona/agent labels or split output by persona.'
@@ -1113,7 +1116,7 @@ class TaskRunner:
                         'summary': str(card.get('tasks') or '').strip()[:120],
                         'proposer': 'AI 제안',
                     }
-                    for i, card in enumerate(cards[:6])
+                    for i, card in enumerate(cards[:target_count])
                 ],
             },
             model_override=request.model_override,
@@ -1139,7 +1142,7 @@ class TaskRunner:
                 ).model_dump(mode='json')
             )
 
-        if len(rows) < 6:
+        if len(rows) < target_count:
             for card in cards:
                 title = str(card.get('title') or '').strip()
                 if not title or title in seen_titles:
@@ -1153,10 +1156,10 @@ class TaskRunner:
                         proposer='AI 제안',
                     ).model_dump(mode='json')
                 )
-                if len(rows) >= 6:
+                if len(rows) >= target_count:
                     break
 
-        while len(rows) < 6:
+        while len(rows) < min_count:
             idx = len(rows) + 1
             rows.append(
                 UnifiedCandidate(
@@ -1167,8 +1170,8 @@ class TaskRunner:
                 ).model_dump(mode='json')
             )
 
-        if len(rows) > 6:
-            rows = rows[:6]
+        if len(rows) > target_count:
+            rows = rows[:target_count]
 
         rows = [
             {**row, 'id': f'u{i + 1}'}

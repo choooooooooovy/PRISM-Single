@@ -264,23 +264,11 @@ export default function Phase3_1BenefitCost() {
                           className="p-4 rounded-lg"
                           style={{ backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
                         >
-                          <div className="flex items-center justify-between gap-2 mb-3">
+                          <div className="flex items-center gap-2 mb-3">
                             <div className="flex items-center gap-2">
                               <Sparkles className="w-4 h-4" style={{ color: 'var(--color-accent)', strokeWidth: 1.5 }} />
                               <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{section.title}</span>
                             </div>
-                            <span
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px]"
-                              style={{
-                                backgroundColor: 'rgba(255,31,86,0.16)',
-                                border: '1px solid rgba(255,31,86,0.42)',
-                                color: 'var(--color-text-primary)',
-                                fontWeight: 700,
-                              }}
-                            >
-                              <Sparkles className="w-3 h-3" style={{ strokeWidth: 2 }} />
-                              AI 초안
-                            </span>
                           </div>
                           <p className="text-[12px] mb-2" style={{ color: 'var(--color-text-secondary)' }}>
                             생성된 초안이 입력되어 있습니다. 직접 수정할 수 있습니다.

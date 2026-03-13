@@ -12,7 +12,7 @@ interface UnifiedItem {
   similar?: string;
 }
 
-const MAX_ALTS = 6;
+const MAX_ALTS = 5;
 const MIN_ALTS = 3;
 
 function createLocalItemId(): string {
@@ -123,7 +123,7 @@ export default function Phase2_2AlternativeGeneration() {
             <div>
               <span className="text-[14px] block" style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}>
                 최소 3개 대안을 남겨주세요.
-                <span style={{ color: 'var(--color-text-secondary)', fontWeight: 400 }}> (권장: 6개)</span>
+                <span style={{ color: 'var(--color-text-secondary)', fontWeight: 400 }}> (권장: 3-5개)</span>
               </span>
               <span className="text-[12px]" style={{ color: 'var(--color-text-secondary)' }}>
                 다음 단계에서 대안별 Benefit/Cost 비교를 진행합니다.
