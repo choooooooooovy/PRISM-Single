@@ -13,15 +13,6 @@ interface ExploreCard {
   outlook: string;
 }
 
-function clampStyle(lines: number): React.CSSProperties {
-  return {
-    display: '-webkit-box',
-    WebkitBoxOrient: 'vertical',
-    WebkitLineClamp: lines,
-    overflow: 'hidden',
-  } as React.CSSProperties;
-}
-
 export default function Phase2_1Exploration() {
   const [explored, setExplored] = React.useState(false);
   const [isGenerating, setIsGenerating] = React.useState(false);
@@ -219,8 +210,6 @@ export default function Phase2_1Exploration() {
                       style={{
                         color: 'var(--color-text-primary)',
                         lineHeight: 1.45,
-                        minHeight: '5.8rem',
-                        ...clampStyle(3),
                       }}
                     >
                       {card.title}
@@ -232,7 +221,7 @@ export default function Phase2_1Exploration() {
                         </p>
                         <p
                           className="text-[13px] leading-relaxed"
-                          style={{ color: 'var(--color-text-secondary)', lineHeight: 1.72, ...clampStyle(5) }}
+                          style={{ color: 'var(--color-text-secondary)', lineHeight: 1.72 }}
                         >
                           {card.tasks}
                         </p>
@@ -243,7 +232,7 @@ export default function Phase2_1Exploration() {
                         </p>
                         <p
                           className="text-[13px] leading-relaxed"
-                          style={{ color: 'var(--color-text-secondary)', lineHeight: 1.72, ...clampStyle(4) }}
+                          style={{ color: 'var(--color-text-secondary)', lineHeight: 1.72 }}
                         >
                           {card.work_environment}
                         </p>
@@ -254,7 +243,7 @@ export default function Phase2_1Exploration() {
                         </p>
                         <p
                           className="text-[13px] leading-relaxed"
-                          style={{ color: 'var(--color-text-secondary)', lineHeight: 1.72, ...clampStyle(4) }}
+                          style={{ color: 'var(--color-text-secondary)', lineHeight: 1.72 }}
                         >
                           {card.outlook}
                         </p>
