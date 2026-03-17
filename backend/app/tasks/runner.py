@@ -1086,8 +1086,8 @@ class TaskRunner:
                 )
             explore = artifact.payload
         cards = list((explore if isinstance(explore, dict) else {}).get('cards') or [])
-        target_count = 5
-        min_count = 3
+        target_count = 6
+        min_count = 6
 
         parsed, prompt_run = await self.openai_service.run_structured(
             db=db,
@@ -1101,8 +1101,7 @@ class TaskRunner:
                 'Return strict JSON only.\n'
                 'All user-facing text values must be Korean.\n'
                 'Output unified_candidates only (single-agent structure).\n'
-                'Create 3 to 5 diverse candidates grounded in input cards.\n'
-                'Prefer 5 candidates unless source quality is insufficient.\n'
+                'Create exactly 6 diverse candidates grounded in input cards.\n'
                 'Each candidate requires id/title/summary/proposer.\n'
                 'proposer should be a fixed string: \"AI 제안\".\n'
                 'Do not use persona/agent labels or split output by persona.'
@@ -2323,7 +2322,7 @@ class TaskRunner:
         if current_slot == 'physical_feelings' and any(token in text for token in ['잠', '수면', '두근', '심장', '긴장', '피곤', '피로', '소화']):
             add_unique('physical_feelings', '수면/긴장 등 신체 반응')
         if current_slot == 'events' and any(token in text for token in ['하라고', '권유', '압박', '강요', '시작', '상황', '계기']):
-            add_unique('events', text[:60])
+            add_unique('events', ' '.join(text.split()))
         if current_slot.startswith('metacognition.'):
             meta = snapshot.get('metacognition') if isinstance(snapshot.get('metacognition'), dict) else {}
             subkey = current_slot.split('.', 1)[1]

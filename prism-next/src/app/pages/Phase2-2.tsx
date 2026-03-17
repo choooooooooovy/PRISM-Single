@@ -24,13 +24,21 @@ function ensureUniqueItems(rows: UnifiedItem[]): UnifiedItem[] {
   const used = new Set<string>();
   return rows
     .map((row, index) => ({
-      ...row,
-      id: String(row.id || `u${index + 1}`).trim() || `u${index + 1}`,
+      row,
+      baseId: String(row.id || `u${index + 1}`).trim() || `u${index + 1}`,
     }))
-    .filter(row => {
-      if (used.has(row.id)) return false;
-      used.add(row.id);
-      return true;
+    .map(({ row, baseId }) => {
+      let nextId = baseId;
+      let suffix = 2;
+      while (used.has(nextId)) {
+        nextId = `${baseId}-${suffix}`;
+        suffix += 1;
+      }
+      used.add(nextId);
+      return {
+        ...row,
+        id: nextId,
+      };
     });
 }
 
@@ -270,7 +278,7 @@ export default function Phase2_2AlternativeGeneration() {
 
           <FooterStepNav
             className="mt-6 flex justify-between"
-            nextDisabled={items.length < MIN_ALTS || isSubmittingNext}
+            nextDisabled={items.length < MIN_ALTS || items.length > MAX_ALTS || isSubmittingNext}
             onBeforeNext={async () => {
               setIsSubmittingNext(true);
               setSubmitError('');

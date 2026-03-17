@@ -73,7 +73,7 @@ class UnifiedCandidate(APIModel):
 
 
 class Phase2CandidatesOutput(APIModel):
-    unified_candidates: list[UnifiedCandidate] = Field(min_length=3, max_length=5)
+    unified_candidates: list[UnifiedCandidate] = Field(min_length=6, max_length=6)
 
 
 class DraftCell(APIModel):
